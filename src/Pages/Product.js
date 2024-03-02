@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Checkout from './Checkout';
-import AddToCartButton from './AddToCartButton';
+import AddToCartButton from '../Components/AddToCartButton';
+import CartList from './CartList';
+
 // Sample product data
 const Products = [
     { id: 1, name: 'Cabbage', price: 10, image: 'grocery-cabbage.jpg' },
@@ -43,30 +44,40 @@ const Products = [
   ];
   
   function Product() {
+    const [products, setProducts] = useState(Products);
     const [cartItems, setCartItems] = useState([]);
-
+  
     const updateCart = (product) => {
-        setCartItems([...cartItems, product]);
+      // Remove the product from the products list
+      const updatedProducts = products.filter((p) => p.id !== product.id);
+      setProducts(updatedProducts);
+      // Add the product to the cart items
+      setCartItems(prevCartItems => [...prevCartItems, product]);
+      console.log('Cart items:', cartItems); 
     };
 
+  
     return (
-        <div className="container mx-auto py-6">
-            <h2 className="text-center text-4xl font-semibold mb-8">Our Products</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {Products.map(product => (
-                    <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src={require(`./Image/${product.image}`).default} alt={product.name} className="w-full h-48 object-cover object-center" />
-                        <div className="p-4">
-                            <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
-                            <p className="text-gray-600">${product.price}</p>
-                            <AddToCartButton product={product} updateCart={updateCart} />
-                        </div>
-                    </div>
-                ))}
+      <div className="container mx-auto py-6">
+        <h2 className="text-center text-4xl font-semibold mb-8">Our Products</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {products.map((product) => (
+            <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+              <img src={`/assets/${product.image}`} alt={product.name} className="w-full h-48 object-cover object-center" />
+              <div className="p-4">
+                <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
+                <p className="text-gray-600">${product.price}</p>
+                <AddToCartButton product={product} updateCart={updateCart} />
+              </div>
             </div>
-            <Checkout />
+          ))}
         </div>
+          <Link to="/cart" >
+             <CartList cartItems={cartItems} />
+          </Link>
+      </div>
     );
-}
-
-export default Product;
+  }
+  
+  export default Product;
+  
