@@ -46,38 +46,46 @@ const Products = [
   function Product() {
     const [products, setProducts] = useState(Products);
     const [cartItems, setCartItems] = useState([]);
-  
+    const [searchTerm, setSearchTerm] = useState('');
+
     const updateCart = (product) => {
-      // Remove the product from the products list
-      const updatedProducts = products.filter((p) => p.id !== product.id);
-      setProducts(updatedProducts);
-      // Add the product to the cart items
-      setCartItems(prevCartItems => [...prevCartItems, product]);
-      console.log('Cart items:', cartItems); 
+        const updatedProducts = products.filter((p) => p.id !== product.id);
+        setProducts(updatedProducts);
+        setCartItems(prevCartItems => [...prevCartItems, product]);
     };
 
-  
-    return (
-      <div className="container mx-auto py-6">
-        <h2 className="text-center text-4xl font-semibold mb-8">Our Products</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((product) => (
-            <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <img src={`/assets/${product.image}`} alt={product.name} className="w-full h-48 object-cover object-center" />
-              <div className="p-4">
-                <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
-                <p className="text-gray-600">${product.price}</p>
-                <AddToCartButton product={product} updateCart={updateCart} />
-              </div>
-            </div>
-          ))}
-        </div>
-          <Link to="/cart" >
-             <CartList cartItems={cartItems} />
-          </Link>
-      </div>
+    const filteredProducts = products.filter(product =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }
-  
-  export default Product;
+
+    return (
+        <div className="container mx-auto py-6">
+            <h2 className="text-center text-4xl font-semibold mb-8">Our Products</h2>
+            <input
+                type="text"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="border border-gray-300 rounded-lg px-4 py-2 mb-4 w-full"
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {filteredProducts.map((product) => (
+                    <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform hover:scale-105">
+                        <img src={`/assets/${product.image}`} alt={product.name} className="w-full h-48 object-cover object-center" />
+                        <div className="p-4">
+                            <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
+                            <p className="text-gray-600">${product.price}</p>
+                            <AddToCartButton product={product} updateCart={updateCart} />
+                        </div>
+                    </div>
+                ))}
+            </div>
+            <Link to="/cart">
+                <CartList cartItems={cartItems} />
+            </Link>
+        </div>
+    );
+}
+
+export default Product;
   

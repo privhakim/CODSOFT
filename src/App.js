@@ -8,6 +8,7 @@ import Contact from './Pages/Contact';
 import About from './Pages/About';
 import Footer from './Components/Footer'; 
 import CartList from './Pages/CartList';
+import Login from './Pages/Login';
 
 function App() {
   
@@ -24,6 +25,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
           <Route path="/cart" element={<CartList cartItems={cartItems} />} /> {/* Pass cartItems to CartList */}
+          <Route path="/login" element={<Login />} />
         </Routes>
         <Footer />
       </div>
